@@ -1,0 +1,158 @@
+============================================================
+  Git 使用指南
+============================================================
+
+一、Git 是什么
+------------------------------------------------------------
+Git 是一个分布式版本控制系统，用来追踪文件的变更历史。
+每次修改都可以保存为一个"快照"(commit)，可以随时回退、
+分支、合并，非常适合团队协作开发。
+
+
+二、核心概念
+------------------------------------------------------------
+概念              说明
+──────────────────────────────────────────────────────
+仓库 (repo)        被 Git 管理的项目目录
+暂存区 (staging)   提交前的"暂存区"，选择哪些文件要提交
+提交 (commit)      一次快照，保存当前文件状态
+分支 (branch)      一条独立的开发线，默认叫 main
+远程 (remote)      托管在服务器上的仓库（如 GitHub）
+
+
+三、工作流程
+------------------------------------------------------------
+  [修改文件] --> [git add] --> [git commit] --> [git push]
+  工作目录      暂存区        本地仓库         远程仓库(GitHub)
+
+
+四、常用命令速查
+------------------------------------------------------------
+命令                             说明
+──────────────────────────────────────────────────────────
+git init                         初始化新仓库
+git clone <url>                  克隆远程仓库到本地
+git status                       查看哪些文件有改动
+git add <file>                   将文件加入暂存区
+git add .                        加入所有改动
+git commit -m "消息"             提交到本地仓库
+git log --oneline                查看提交历史（简洁模式）
+git diff                         查看具体改了什么
+
+git branch                       查看分支列表
+git branch <名称>                 创建新分支
+git switch <名称>                 切换分支
+git switch -c <名称>              创建 + 切换分支
+git merge <名称>                  合并分支到当前分支
+
+git push                         推送到远程 (GitHub)
+git pull                         从远程拉取最新代码
+git fetch                        只拉取不合并
+
+git restore <文件>                撤销工作区改动
+git restore --staged <文件>       取消暂存
+git stash / git stash pop        暂存当前改动 / 恢复
+
+五、与 GitHub 搭配
+------------------------------------------------------------
+1. 首次关联远程仓库
+   git remote add origin https://github.com/用户名/仓库.git
+
+2. 推送本地代码到 GitHub
+   git push -u origin main
+
+3. 之后日常推送
+   git push
+
+4. 拉取远程更新
+   git pull
+
+
+六、完整示例：从零到 PR
+------------------------------------------------------------
+
+假设你要为团队项目新增一个"登录功能"。
+
+# ====== 步骤 1: 克隆仓库 ======
+git clone https://github.com/team/my-app.git
+cd my-app
+
+# ====== 步骤 2: 创建功能分支 ======
+git switch -c feature/login
+
+# ====== 步骤 3: 写代码，然后提交 ======
+# ... 你编写了 login.html 和 login.js ...
+
+git status
+# 输出:
+#   Modified: login.html
+#   Untracked: login.js
+
+git add login.html login.js
+git commit -m "添加登录页面和逻辑"
+
+# 继续开发，又改了一些
+echo "console.log('debug')" >> login.js
+git add login.js
+git commit -m "登录页添加调试日志"
+
+# 查看提交历史
+git log --oneline
+# 输出:
+#   a1b2c3d 登录页添加调试日志
+#   4e5f6g7 添加登录页面和逻辑
+#   8h9i0j1 初始化项目
+
+# ====== 步骤 4: 推送到 GitHub ======
+git push -u origin feature/login
+
+# ====== 步骤 5: 去 GitHub 网页上 ======
+# 打开仓库页面 --> 点击 "Pull Requests" --> "New Pull Request"
+# 选择 base: main  <-- compare: feature/login
+# 填写标题和说明 --> 点击 "Create Pull Request"
+
+# ====== 步骤 6: 队友 Review 并合并 ======
+# 队友在 GitHub 上查看代码、提意见、批准
+# 合并后，你回到本地更新 main 分支
+
+git switch main
+git pull
+git branch -d feature/login    # 删除本地分支（功能已合并）
+
+
+七、解决冲突示例
+------------------------------------------------------------
+# 假设你和队友同时改了 login.html 的同一行
+
+git pull
+# 输出: CONFLICT in login.html
+
+# 打开 login.html，看到冲突标记:
+# <<<<<<< HEAD
+#   <h1>我的版本</h1>
+# =======
+#   <h1>队友的版本</h1>
+# >>>>>>> origin/main
+
+# 手动编辑，保留正确的版本（比如合并两个标题）:
+#   <h1>登录页面 v2</h1>
+
+# 标记冲突已解决
+git add login.html
+git commit -m "解决 login.html 合并冲突"
+
+
+八、常见问题
+------------------------------------------------------------
+Q: 想放弃本地所有修改，回到上次提交的状态？
+A: git restore .           (放弃工作区改动)
+   git restore --staged .  (放弃暂存区)
+
+Q: 提交信息写错了怎么办？
+A: git commit --amend -m "新的消息"   (仅限还没 push 的提交)
+
+Q: 忘拉代码就直接改了，push 时被拒绝？
+A: git pull --rebase       (先把远程代码合并到本地，再 push)
+
+Q: 想看某个文件的历史改动？
+A: git log --oneline -- <文件路径>

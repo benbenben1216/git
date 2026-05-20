@@ -1,0 +1,106 @@
+claude --continue继续上次对话
+
+好的，你跟着下面步骤一步步操作。以刚才克隆的 2026_MCM_A 项目为例，演示添加一张图片的完整流程。
+
+  ---
+  从零开始：向 GitHub 项目添加图片
+
+  前提条件
+
+  - 已安装 Git
+  - 已有 GitHub 账号
+  - 已克隆仓库到本地：E:/projects/claudecode-work/git/2026_MCM_A/
+
+  ---
+  第 1 步：进入项目目录
+
+  cd E:/projects/claudecode-work/git/2026_MCM_A
+
+  第 2 步：查看当前状态
+
+  git status
+  应该显示 nothing to commit, working tree clean，说明当前是干净的。
+
+  git log --oneline
+  查看已有的提交记录。
+
+  第 3 步：创建并切换到新分支
+
+  永远不要在 main 分支上直接改代码，这是 Git 的核心纪律。
+
+  git switch -c add-image
+
+  -c 表示创建新分支，add-image 是分支名。现在你就在这个新分支上了。
+
+  验证一下：
+  git branch
+  当前分支前面会有一个 * 号。
+
+  第 4 步：添加图片文件
+
+  手动操作：在 2026_MCM_A 目录下新建一个 images 文件夹，把你想要添加的图片放进去。
+
+  或者用命令行创建一张测试图片（用 Python 生成一张简单示意图）：
+
+  mkdir images
+
+  然后你可以把任意图片复制到 images/ 目录下。假设图片叫 flowchart.png。
+
+  第 5 步：查看改了什么
+
+  git status
+  你会看到 images/ 是未跟踪的（Untracked files），显示为红色。
+
+  第 6 步：加入暂存区
+
+  git add images/
+
+  再查看状态：
+  git status
+  现在 images/ 变成绿色，说明已进入暂存区，准备提交。
+
+  第 7 步：提交到本地仓库
+
+  git commit -m "添加项目流程图"
+
+  第 8 步：查看提交历史
+
+  git log --oneline
+  你会看到新增了一条提交记录。
+
+  第 9 步：推送到 GitHub
+
+  git push -u origin add-image
+  -u 让本地分支追踪远程分支，以后直接 git push 就行了。
+
+  第 10 步：在 GitHub 网页上创建 Pull Request
+
+  1. 打开 https://github.com/benbenben1216/2026_MCM_A
+  2. 页面上会出现一个黄色提示条：add-image had recent pushes
+  3. 点击 Compare & pull request
+  4. 填写标题和说明，点击 Create pull request
+
+  第 11 步：合并后清理
+
+  PR 被合并后，回到本地：
+
+  git switch main          # 切回 main 分支
+  git pull                 # 拉取最新代码（包含你刚合并的改动）
+  git branch -d add-image  # 删除本地功能分支
+
+  ---
+  完整命令速览（一步步敲）
+
+  cd E:/projects/claudecode-work/git/2026_MCM_A    # 1. 进入项目
+  git status                                         # 2. 查看状态
+  git switch -c add-image                            # 3. 创建分支
+  mkdir images                                       # 4. 创建目录，放入图片
+  git status                                         # 5. 看改动
+  git add images/                                    # 6. 暂存
+  git commit -m "添加项目流程图"                       # 7. 提交
+  git log --oneline                                  # 8. 看历史
+  git push -u origin add-image                       # 9. 推送
+  # 10. 去 GitHub 网页创建 PR
+  # 11. PR 合并后: git switch main && git pull && git branch -d add-image
+
+  这就是一次完整的 Git + GitHub 协作流程。你现在可以打开终端，从第 1 步开始敲命令。有问题随时问我。
